@@ -57,3 +57,7 @@ int main() {
     cout << maxDepth << endl;
     cout << duration_cast<milliseconds>(end - start).count() << endl;
 }
+
+// Recurrence Relation: T(n) = 3T(n/2) + O(n log n)
+// Time Complexity: O(n^(log2(3))) approximately O(n^1.585)
+// 24BCS12204
