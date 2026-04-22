@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coin Change Optimizer</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+        }
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Coin Change Optimizer</h1>
+
+    <div class="box">
+        <input type="text" id="coins" placeholder="Enter coins (e.g. 1 3 4)">
+        <br>
+        <input type="number" id="amount" placeholder="Enter amount">
+        <br>
+        <button onclick="calculate()">Calculate</button>
+
+        <h3 id="output"></h3>
+    </div>
+
+    <script>
+        function greedy(coins, amount) {
+            coins.sort((a, b) => b - a);
+            let result = [];
+
+            for (let coin of coins) {
+                while (amount >= coin) {
+                    amount -= coin;
+                    result.push(coin);
+                }
+            }
+            return result;
+        }
+
+        function dp(coins, amount) {
+            let dp = Array(amount + 1).fill(Infinity);
+            let prev = Array(amount + 1).fill(-1);
+            dp[0] = 0;
+
+            for (let i = 1; i <= amount; i++) {
+                for (let coin of coins) {
+                    if (i - coin >= 0 && dp[i - coin] + 1 < dp[i]) {
+                        dp[i] = dp[i - coin] + 1;
+                        prev[i] = coin;
+                    }
+                }
+            }
+
+            let res = [];
+            while (amount > 0) {
+                res.push(prev[amount]);
+                amount -= prev[amount];
+            }
+            return res;
+        }
+
+        function calculate() {
+            let coins = document.getElementById("coins").value.split(" ").map(Number);
+            let amount = parseInt(document.getElementById("amount").value);
+
+            let g = greedy(coins, amount);
+            let d = dp(coins, amount);
+
+            document.getElementById("output").innerHTML =
+                "Greedy: " + g.join(", ") + " (" + g.length + " coins)<br>" +
+                "DP: " + d.join(", ") + " (" + d.length + " coins)";
+        }
+    </script>
+
+</body>
+</html>
